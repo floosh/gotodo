@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<form action="/save/" method="POST">
+	<input type="text" name="title">
+	<input type="submit" value="Add">
+</form>
+{{range .}}
+	<div>{{template "Todo" .}}</div>
+{{end}}
