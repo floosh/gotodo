@@ -9,7 +9,6 @@ import (
   	"github.com/gorilla/mux"
 )
 
-var templates = template.Must(template.ParseFiles("index.html", "todo.html"))
 var db *gorm.DB
 
 func makeHandler(fn func(http.ResponseWriter, *http.Request, *gorm.DB)) http.HandlerFunc {
