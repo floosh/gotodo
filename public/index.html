@@ -30,23 +30,48 @@
 <script id="todo-template" type="text/x-handlebars-template">
     {{#each .}}
 	<div class="todo">
-		<button class="pure-button" onclick="deleteTodo({{id}})">X</button>
-		<h3 onclick="toggleCompleted({{id}}, {{completed}})" {{#if completed}}class="todo-done"{{/if}}class="">{{title}}</h3>
-		<div class="description">
-	 		{{description}}    
+		<div class="pure-button-group todo-action-group" role="group">
+			<button class="pure-button" onclick="deleteTodo({{id}})">X</button>
+			<button class="pure-button" onclick='editTodo(this, {{{json .}}})'>Edit</button>
+		</div>
+		<h3 onclick="toggleCompleted({{id}}, {{completed}})" {{#if completed}}class="todo-done"{{/if}}>{{title}}</h3>
+		<div class="description" style="white-space: pre-line;">
+	 		{{description}}   
 	 	</div>
 	</div>
 	<hr/>
 	{{/each}}
 </script>
+
+<!-- Todos rendering template (Edit mode) -->
+<script id="todo-template-edit" type="text/x-handlebars-template">
+	<form id="todoFormEdit" class="pure-form">
+        <fieldset class="pure-group">
+        	<input name="id" type="hidden" value="{{id}}">
+            <input name="title" class="pure-input-1-2" placeholder="Title" value="{{title}}" required="true"></input>
+            <textarea name="description" class="pure-input-1-2" placeholder="Description">{{description}}</textarea>
+            <div class="pure-button-group" role="group">
+                <button type="submit" class="pure-button-1-2 pure-button pure-button-primary">Edit</button>
+                <button class="pure-button" onclick="updateView()">Cancel</button>
+        	</div>
+        </fieldset>
+    </form>
+</script>
 <script type="text/javascript">
-// Pre-compile render template
+// Render json with handlebars
+Handlebars.registerHelper('json', function(context) {
+    return JSON.stringify(context);
+});
+
+// Pre-compile render templates
 var todoTemplate = Handlebars.compile($("#todo-template").html());
+var todoTemplateEdit = Handlebars.compile($("#todo-template-edit").html());
 
 $(function() {
 
     // Handle form submit (Create a todo)
-    $("#todoForm").submit(function(e) {
+    $("#todoForm").submit(function(elem) {
+        elem.preventDefault();
         $.ajax({
             type: "POST",
             url: "/api/todos",
@@ -54,16 +79,29 @@ $(function() {
                 title: $("#title").val(),
                 description: $("#description").val()
             }),
-            complete: updateTodos
+            complete: updateView
         })
-        e.preventDefault()
+    })
+
+    // Handle edit form submit (Update a todo)
+    $(".content").on("submit", "#todoFormEdit", function(elem) {
+        elem.preventDefault();
+        $.ajax({
+            type: "PUT",
+            url: "/api/todos/" + $(this).find('input[name="id"]').val(),
+            data: JSON.stringify({
+                title: $(this).find('input[name="title"]').val(),
+                description: $(this).find('textarea[name="description"]').val()
+            }),
+            complete: updateView
+        })
     })
 
     // Display todos
-    updateTodos();
+    updateView();
 });
 
-function updateTodos() {
+function updateView() {
     $.getJSON("/api/todos", function(todos) {
         console.log(todos);
         $("#todos").html(todoTemplate(todos));
@@ -74,21 +112,25 @@ function deleteTodo(id) {
     $.ajax({
         type: "DELETE",
         url: "/api/todos/" + id,
-        complete: updateTodos
+        complete: updateView
     })
 }
 
 function toggleCompleted(id, value) {
-    console.log(value)
     $.ajax({
         type: "PUT",
         url: "/api/todos/" + id,
         data: JSON.stringify({
             "completed": !value
         }),
-        complete: updateTodos
+        complete: updateView
     })
 }
+
+function editTodo(elem, todo) {
+    $(elem).closest(".todo").html(todoTemplateEdit(todo));
+}
+
 </script>
 
 </html>
