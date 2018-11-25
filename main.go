@@ -1,9 +1,8 @@
 package main
 
 import (
-	"net/http"
-	"html/template"
 	"log"
+	"net/http"
 	"github.com/jinzhu/gorm"
   	_ "github.com/jinzhu/gorm/dialects/sqlite"
   	"github.com/gorilla/mux"
@@ -13,6 +12,8 @@ var db *gorm.DB
 
 func makeHandler(fn func(http.ResponseWriter, *http.Request, *gorm.DB)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// Logging
+		log.Printf("%s\t%s", r.Method, r.RequestURI)
 		// We're dealing with JSON here
 		w.Header().Set("Content-Type", "application/json")
 		// Pass DB instance to handlers
