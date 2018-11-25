@@ -6,32 +6,18 @@ import (
 	"log"
 	"github.com/jinzhu/gorm"
   	_ "github.com/jinzhu/gorm/dialects/sqlite"
-
+  	"github.com/gorilla/mux"
 )
 
 var templates = template.Must(template.ParseFiles("index.html", "todo.html"))
 var db *gorm.DB
 
-func viewHandler(w http.ResponseWriter, r *http.Request) {
-	todos := []Todo{}
-	err := db.Find(&todos).Error
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	renderTemplate(w, "index", todos)
-}
-
-func saveHandler(w http.ResponseWriter, r *http.Request) {
-	title := r.FormValue("title")
-	db.Create(&Todo{Title:title})
-	http.Redirect(w, r, "/", http.StatusFound)
-}
-
-func renderTemplate(w http.ResponseWriter, tmpl string, t []Todo) {
-	err := templates.ExecuteTemplate(w, tmpl+".html", t)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+func makeHandler(fn func(http.ResponseWriter, *http.Request, *gorm.DB)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// We're dealing with JSON here
+		w.Header().Set("Content-Type", "application/json")
+		// Pass DB instance to handlers
+		fn(w, r, db)
 	}
 }
 
@@ -49,8 +35,11 @@ func main() {
 	// Migrate schemas
 	db.AutoMigrate(&Todo{})
 
-	http.HandleFunc("/",viewHandler)
-	http.HandleFunc("/save/",saveHandler)
+	// mux router
+	router := mux.NewRouter().StrictSlash(true)
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	// Routes !
+	router.HandleFunc("/todos", 		makeHandler(TodoIndex)).Methods("GET")
+	router.HandleFunc("/todos/{id}", 	makeHandler(TodoShow)).Methods("GET")
+	log.Fatal(http.ListenAndServe(":8080", router))
 }

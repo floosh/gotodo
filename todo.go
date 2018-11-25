@@ -1,16 +1,14 @@
 package main
 
-//import "github.com/jinzhu/gorm"
+import "time"
 
 // Todo type
 type Todo struct {
-	ID 			uint 		`gorm:"primary_key"`
-	Title, Desc string
+	ID			uint		`json:"id", gorm:"primary_key"`
+    Title		string		`json:"title"`
+    Description	string		`json:"description"`
+    Completed	bool		`json:"completed"`
+    Due 		time.Time 	`json:"due"`
 }
 
-
-
-// func (t* Todo) save() error {
-// 	// Handle persistence
-// 	return nil
-// }
+type Todos []Todo
