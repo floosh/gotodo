@@ -35,11 +35,20 @@ func main() {
 	// Migrate schemas
 	db.AutoMigrate(&Todo{})
 
-	// mux router
+	// Mux router
 	router := mux.NewRouter().StrictSlash(true)
 
 	// Routes !
-	router.HandleFunc("/todos", 		makeHandler(TodoIndex)).Methods("GET")
-	router.HandleFunc("/todos/{id}", 	makeHandler(TodoShow)).Methods("GET")
+	// Read
+	router.HandleFunc("/todos", 			makeHandler(TodoIndex)).Methods("GET")
+	router.HandleFunc("/todos/{id:[0-9]+}",	makeHandler(TodoShow)).Methods("GET")
+
+	// Create
+	router.HandleFunc("/todos", 			makeHandler(TodoCreate)).Methods("POST")
+
+	// Update
+	router.HandleFunc("/todos/{id:[0-9]+}", makeHandler(TodoUpdate)).Methods("PUT")
+
+	// Listen
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
