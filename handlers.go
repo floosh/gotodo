@@ -27,11 +27,11 @@ func TodoShow(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
 func TodoCreate(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
 	// setup the json decoder
 	decoder := json.NewDecoder(r.Body)
-    
+
     // Decode the input json to fill a Todo struct
     todo := Todo{}
     if err := decoder.Decode(&todo); err != nil {
-    	http.Error(w, db.Error.Error(), http.StatusInternalServerError)
+    	http.Error(w, err.Error(), http.StatusBadRequest)
     	return
     }
 
@@ -58,7 +58,7 @@ func TodoUpdate(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
     // Decode the input json 
     updateData := make(map[string]interface{})
     if err := decoder.Decode(&updateData); err != nil {
-    	http.Error(w, db.Error.Error(), http.StatusInternalServerError)
+    	http.Error(w, err.Error(), http.StatusBadRequest)
     	return
     }
 
@@ -67,6 +67,24 @@ func TodoUpdate(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
     	// Return a 204
     	w.WriteHeader(http.StatusNoContent)
     }
+}
+
+func TodoDelete(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
+	// Grab requested Id
+    id := mux.Vars(r)["id"]
+
+    // Get the todo {id}
+    todo := Todo{}
+    if dbError(w, db.First(&todo, id)) {
+    	return
+    }
+
+    // Delete the todo
+    if !dbError(w, db.Delete(&todo)) {
+    	// Return a 204
+    	w.WriteHeader(http.StatusNoContent)
+    }
+
 }
 
 func returnJson(w http.ResponseWriter, s interface{}) {

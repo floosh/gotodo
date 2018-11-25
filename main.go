@@ -35,20 +35,20 @@ func main() {
 	// Migrate schemas
 	db.AutoMigrate(&Todo{})
 
-	// Mux router
+
 	router := mux.NewRouter().StrictSlash(true)
+	// API subrouter
+	api := router.PathPrefix("/api").Subrouter()
+	// Serve static files in 'public' folder
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 
 	// Routes !
-	// Read
-	router.HandleFunc("/todos", 			makeHandler(TodoIndex)).Methods("GET")
-	router.HandleFunc("/todos/{id:[0-9]+}",	makeHandler(TodoShow)).Methods("GET")
+	api.HandleFunc("/todos", 			makeHandler(TodoIndex)).Methods("GET")		// Read
+	api.HandleFunc("/todos/{id:[0-9]+}",	makeHandler(TodoShow)).Methods("GET")	// Read
+	api.HandleFunc("/todos", 			makeHandler(TodoCreate)).Methods("POST")	// Create
+	api.HandleFunc("/todos/{id:[0-9]+}", makeHandler(TodoUpdate)).Methods("PUT")	// Update
+	api.HandleFunc("/todos/{id:[0-9]+}", makeHandler(TodoDelete)).Methods("DELETE")	// Delete
 
-	// Create
-	router.HandleFunc("/todos", 			makeHandler(TodoCreate)).Methods("POST")
-
-	// Update
-	router.HandleFunc("/todos/{id:[0-9]+}", makeHandler(TodoUpdate)).Methods("PUT")
-
-	// Listen
+	// Server listen on port 8080
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

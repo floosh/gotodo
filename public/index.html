@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <title>GoTodo</title>
+    <link rel='stylesheet' href='/css/style.css' />
+    <link rel='stylesheet' href='/css/pure-min.css' />
+    <script type="text/javascript" src="/lib/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="/lib/handlebars.min.js"></script>
+</head>
+
+<body>
+    <div class="header">
+        <h1>GoToDo</h1>
+    </div>
+    <div class="content">
+        <form id="todoForm" class="pure-form">
+            <fieldset class="pure-group">
+                <input id="title" class="pure-input-1-2" placeholder="Title" required="true">
+                <textarea id="description" class="pure-input-1-2" placeholder="Description"></textarea>
+                <button type="submit" class="pure-button pure-button-primary">Create</button>
+            </fieldset>
+        </form>
+        <div id="todos"></div>
+    </div>
+</body>
+
+<!-- Todos rendering template -->
+<script id="todo-template" type="text/x-handlebars-template">
+    {{#each .}}
+	<div class="todo">
+		<button class="pure-button" onclick="deleteTodo({{id}})">X</button>
+		<h3 onclick="toggleCompleted({{id}}, {{completed}})" {{#if completed}}class="todo-done"{{/if}}class="">{{title}}</h3>
+		<div class="description">
+	 		{{description}}    
+	 	</div>
+	</div>
+	<hr/>
+	{{/each}}
+</script>
+<script type="text/javascript">
+// Pre-compile render template
+var todoTemplate = Handlebars.compile($("#todo-template").html());
+
+$(function() {
+
+    // Handle form submit (Create a todo)
+    $("#todoForm").submit(function(e) {
+        $.ajax({
+            type: "POST",
+            url: "/api/todos",
+            data: JSON.stringify({
+                title: $("#title").val(),
+                description: $("#description").val()
+            }),
+            complete: updateTodos
+        })
+        e.preventDefault()
+    })
+
+    // Display todos
+    updateTodos();
+});
+
+function updateTodos() {
+    $.getJSON("/api/todos", function(todos) {
+        console.log(todos);
+        $("#todos").html(todoTemplate(todos));
+    })
+}
+
+function deleteTodo(id) {
+    $.ajax({
+        type: "DELETE",
+        url: "/api/todos/" + id,
+        complete: updateTodos
+    })
+}
+
+function toggleCompleted(id, value) {
+    console.log(value)
+    $.ajax({
+        type: "PUT",
+        url: "/api/todos/" + id,
+        data: JSON.stringify({
+            "completed": !value
+        }),
+        complete: updateTodos
+    })
+}
+</script>
+
+</html>

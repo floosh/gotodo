@@ -1,0 +1,25 @@
+.header {
+	text-align: center;
+}
+
+.header h1 {
+	font-weight: 300;
+}
+
+.content {
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+.content .pure-form .pure-input-1-2, .content .pure-form button {
+    width: 100%;
+}
+
+.todo-done {
+	text-decoration: line-through;
+	color: #777;
+}
+
+.todo > button {
+	float: right;
+}
