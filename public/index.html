@@ -14,14 +14,14 @@
 
 <body>
     <div class="header">
-        <h1>GoToDo</h1>
+        <h1><i class="far fa-list-alt"></i> GoToDo</h1>
     </div>
     <div class="content">
         <form id="todoForm" class="pure-form">
             <fieldset class="pure-group">
                 <input id="title" class="pure-input-1-2" placeholder="Title" required="true">
                 <textarea id="description" class="pure-input-1-2" placeholder="Description"></textarea>
-                <button type="submit" class="pure-button pure-button-primary">Create</button>
+                <button type="submit" class="pure-button pure-button-primary">Add</button>
             </fieldset>
         </form>
         <div id="todos"></div>
@@ -59,7 +59,9 @@
         </fieldset>
     </form>
 </script>
+
 <script type="text/javascript">
+
 // Render json with handlebars
 Handlebars.registerHelper('json', function(context) {
     return JSON.stringify(context);
@@ -83,6 +85,9 @@ $(function() {
             }),
             complete: updateView
         })
+        // Empty the form
+        $("#title").val("")
+        $("#description").val("")
     })
 
     // Handle edit form submit (Update a todo)
@@ -103,9 +108,13 @@ $(function() {
     updateView();
 });
 
+
 function updateView() {
     $.getJSON("/api/todos", function(todos) {
-        console.log(todos);
+    	// Put completed todos at the end
+        todos.sort(function(a, b) {
+        	return a.completed
+        })
         $("#todos").html(todoTemplate(todos));
     })
 }
@@ -118,6 +127,7 @@ function deleteTodo(id) {
     })
 }
 
+// Toggle the "completed" field of a todo
 function toggleCompleted(id, value) {
     $.ajax({
         type: "PUT",
@@ -129,6 +139,7 @@ function toggleCompleted(id, value) {
     })
 }
 
+// Load the form for editing the todo
 function editTodo(elem, todo) {
     $(elem).closest(".todo").html(todoTemplateEdit(todo));
 }

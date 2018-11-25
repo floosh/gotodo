@@ -23,3 +23,17 @@
 .todo-action-group {
 	float: right;
 }
+
+.todo h3:hover {
+	background-color: #EEE;
+}
+
+.todo h3 {
+	cursor: pointer;
+	padding: 6px 0;
+	margin: 0px;
+}
+
+hr {
+	color:white;
+}
