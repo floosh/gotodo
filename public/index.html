@@ -6,7 +6,6 @@
     <title>GoTodo</title>
     <link rel='stylesheet' href='/css/style.css' />
     <link rel='stylesheet' href='/css/pure-min.css' />
-    <link rel="stylesheet" href="/css/all.css"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
     <script type="text/javascript" src="/lib/jquery-3.3.1.js"></script>
     <script type="text/javascript" src="/lib/handlebars.min.js"></script>
@@ -31,31 +30,31 @@
 <!-- Todos rendering template -->
 <script id="todo-template" type="text/x-handlebars-template">
     {{#each .}}
-	<div class="todo">
-		<div class="pure-button-group todo-action-group" role="group">
-			<button class="pure-button" onclick='editTodo(this, {{{json .}}})'><i class="fas fa-edit"></i></button>
-			<button class="pure-button" onclick="deleteTodo({{id}})"><i class="fas fa-trash-alt"></i></button>
-		</div>
-		<h3 onclick="toggleCompleted({{id}}, {{completed}})" {{#if completed}}class="todo-done"{{/if}}>{{title}}</h3>
-		<div class="description" style="white-space: pre-line;">
-	 		{{description}}   
-	 	</div>
-	</div>
-	<hr/>
-	{{/each}}
+    <div class="todo">
+        <div class="pure-button-group todo-action-group" role="group">
+            <button class="pure-button" onclick="editTodo(this, {{json .}})"><i class="fas fa-edit"></i></button>
+            <button class="pure-button" onclick="deleteTodo({{id}})"><i class="fas fa-trash-alt"></i></button>
+        </div>
+        <h3 onclick="toggleCompleted({{id}}, {{completed}})" {{#if completed}}class="todo-done"{{/if}}>{{title}}</h3>
+        <div class="description" style="white-space: pre-line;">
+            {{description}}   
+        </div>
+    </div>
+    <hr/>
+    {{/each}}
 </script>
 
 <!-- Todos rendering template (Edit mode) -->
 <script id="todo-template-edit" type="text/x-handlebars-template">
-	<form id="todoFormEdit" class="pure-form">
+    <form id="todoFormEdit" class="pure-form">
         <fieldset class="pure-group">
-        	<input name="id" type="hidden" value="{{id}}">
+            <input name="id" type="hidden" value="{{id}}">
             <input name="title" class="pure-input-1-2" placeholder="Title" value="{{title}}" required="true"></input>
             <textarea name="description" class="pure-input-1-2" placeholder="Description">{{description}}</textarea>
             <div class="pure-button-group" role="group">
                 <button type="submit" class="pure-button-1-2 pure-button pure-button-primary">Edit</button>
                 <button class="pure-button" onclick="updateView()">Cancel</button>
-        	</div>
+            </div>
         </fieldset>
     </form>
 </script>
@@ -108,12 +107,11 @@ $(function() {
     updateView();
 });
 
-
 function updateView() {
     $.getJSON("/api/todos", function(todos) {
-    	// Put completed todos at the end
+        // Put completed todos at the end
         todos.sort(function(a, b) {
-        	return a.completed
+            return a.completed
         })
         $("#todos").html(todoTemplate(todos));
     })
