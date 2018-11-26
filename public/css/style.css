@@ -11,26 +11,24 @@
     margin: 0 auto;
 }
 
-.todo-done {
-    text-decoration: line-through;
-    color: #777;
-}
-
 .todo-action-group {
     float: right;
 }
 
-.todo h3:hover {
-    background-color: #EEE;
+.due, .status {
+	padding-top:5px;
+}
+
+.status {
+	float: right;
 }
 
 .todo h3 {
-    cursor: pointer;
     padding: 6px 0;
     margin: 0px;
 }
 
-.todo .due {
+.todo .due, .todo .status {
     color: #777;
 }
 
@@ -46,4 +44,9 @@ hr {
 /* Bypass pure-css */
 input.todo-title-edit, input.todo-due-edit {
 	border-radius: 0 !important;
+}
+
+.todo-status-edit {
+	float:right;
+	margin: .35em 0;
 }

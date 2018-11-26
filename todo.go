@@ -7,7 +7,7 @@ type Todo struct {
 	ID			uint 		`json:"id", gorm:"primary_key"`
     Title		string		`json:"title"`
     Description	string		`json:"description"`
-    Completed	bool		`json:"completed"`
+    Status		string		`json:"status"`
     Due 		time.Time 	`json:"due"`
 }
 

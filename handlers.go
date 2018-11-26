@@ -8,6 +8,7 @@ import (
     "github.com/jinzhu/gorm"
 )
 
+// GET /todos
 func TodoIndex(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
     // Return all todos
     todos := Todos{}
@@ -16,6 +17,7 @@ func TodoIndex(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
 	}
 }
 
+// GET /todos/id
 func TodoShow(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
 	// Grab requested Id
     id := mux.Vars(r)["id"]
@@ -26,6 +28,7 @@ func TodoShow(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
     }
 }
 
+// POST /todos
 func TodoCreate(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
 	// setup the json decoder
 	decoder := json.NewDecoder(r.Body)
@@ -44,6 +47,7 @@ func TodoCreate(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
     }
 }
 
+// PUT /todos/id
 func TodoUpdate(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
 	// Grab requested Id
     id := mux.Vars(r)["id"]
@@ -84,6 +88,7 @@ func TodoUpdate(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
     }
 }
 
+// DELETE /todos/id
 func TodoDelete(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
 	// Grab requested Id
     id := mux.Vars(r)["id"]

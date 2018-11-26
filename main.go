@@ -35,7 +35,7 @@ func main() {
 	// Migrate schemas
 	db.AutoMigrate(&Todo{})
 
-
+	// We're using the mux multiplexer library
 	router := mux.NewRouter().StrictSlash(true)
 	// API subrouter
 	api := router.PathPrefix("/api").Subrouter()

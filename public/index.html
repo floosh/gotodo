@@ -47,10 +47,11 @@
             <button class="pure-button" onclick="deleteTodo({{id}})"><i class="fas fa-trash-alt"></i></button>
         </div>
         <h3>{{title}}</h3>
-        <p class="description">
+        <div class="description">
             {{description}}   
-        </p>
-        <p class="due"><i class="far fa-clock"></i> {{fancy-date due}}</p>
+        </div>
+        <div class="status">Status:<b> {{status}}</b></div>
+        <div class="due"><i class="far fa-clock"></i> {{fancy-date due}}</div>
     </div>
     <hr/>
     {{/each}}
@@ -70,6 +71,12 @@
                     </div>
                 </div>
             <textarea name="description" class="pure-input-1" placeholder="Description">{{description}}</textarea>
+            <select name="status" value={{status}} class="todo-status-edit pure-input-1-3" >
+                <option selected disabled>{{status}}</option>
+                <option>Todo</option>
+                <option>Doing</option>
+                <option>Done</option>
+            </select>
             <div class="pure-button-group" role="group">
                 <button type="submit" class="pure-button pure-button-primary">Edit</button>
                 <button type="button" class="pure-button" onclick="updateView()">Cancel</button>
@@ -111,7 +118,8 @@ $(function() {
             data: JSON.stringify({
                 title: $("#title").val(),
                 description: $("#description").val(),
-                due: moment($("#due").val() || moment()) .format()
+                due: moment($("#due").val() || moment()) .format(),
+                status: "Todo"      
             }),
             complete: updateView
         })
@@ -130,7 +138,8 @@ $(function() {
             data: JSON.stringify({
                 title: $(this).find('input[name="title"]').val(),
                 description: $(this).find('textarea[name="description"]').val(),
-                due: moment($(this).find('input[name="due"]').val() || moment()).format()
+                due: moment($(this).find('input[name="due"]').val() || moment()).format(),
+                status: $(this).find('select[name="status"]').val()
             }),
             complete: updateView
         })
@@ -164,7 +173,9 @@ function deleteTodo(id) {
 
 // Load the form for editing the todo
 function editTodo(elem, todo) {
+    // Pick the right container
     var todoContainer = $(elem).closest(".todo")
+    // Render the template
     todoContainer.html(todoTemplateEdit(todo));
     // Setup a datepicker for the edit form
     todoContainer.find('[data-toggle="datepicker"]').datepicker();
