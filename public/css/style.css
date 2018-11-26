@@ -1,39 +1,48 @@
 .header {
-	text-align: center;
+    text-align: center;
 }
 
 .header h1 {
-	font-weight: 300;
+    font-weight: 300;
 }
 
 .content {
-	max-width: 600px;
-	margin: 0 auto;
-}
-
-.content .pure-form .pure-input-1-2{
-    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .todo-done {
-	text-decoration: line-through;
-	color: #777;
+    text-decoration: line-through;
+    color: #777;
 }
 
 .todo-action-group {
-	float: right;
+    float: right;
 }
 
 .todo h3:hover {
-	background-color: #EEE;
+    background-color: #EEE;
 }
 
 .todo h3 {
-	cursor: pointer;
-	padding: 6px 0;
-	margin: 0px;
+    cursor: pointer;
+    padding: 6px 0;
+    margin: 0px;
+}
+
+.todo .due {
+    color: #777;
+}
+
+.todo .description {
+    white-space: pre-line;
+    margin-bottom: 5px; 
 }
 
 hr {
-	color:white;
+    color: white;
+}
+
+#title, #due {
+	border-radius: 0;
 }

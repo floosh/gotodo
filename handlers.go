@@ -1,5 +1,7 @@
 package main
 import (
+	"fmt"
+	"time"
     "net/http"
     "encoding/json"
     "github.com/gorilla/mux"
@@ -58,6 +60,19 @@ func TodoUpdate(w http.ResponseWriter, r *http.Request, db *gorm.DB) {
     // Decode the input json 
     updateData := make(map[string]interface{})
     if err := decoder.Decode(&updateData); err != nil {
+    	http.Error(w, err.Error(), http.StatusBadRequest)
+    	return
+    }
+    fmt.Printf("%T", updateData["due"])
+
+    // Quick fix, "due" needs to be a date object
+    var err error
+    updateData["due"] , err = time.Parse(
+        time.RFC3339,
+     	updateData["due"].(string))
+
+    // Handle bad date format
+    if err != nil {
     	http.Error(w, err.Error(), http.StatusBadRequest)
     	return
     }

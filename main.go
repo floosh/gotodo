@@ -43,9 +43,9 @@ func main() {
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 
 	// Routes !
-	api.HandleFunc("/todos", 			makeHandler(TodoIndex)).Methods("GET")		// Read
-	api.HandleFunc("/todos/{id:[0-9]+}",	makeHandler(TodoShow)).Methods("GET")	// Read
-	api.HandleFunc("/todos", 			makeHandler(TodoCreate)).Methods("POST")	// Create
+	api.HandleFunc("/todos", 			 makeHandler(TodoIndex)).Methods("GET")		// Read
+	api.HandleFunc("/todos/{id:[0-9]+}", makeHandler(TodoShow)).Methods("GET")		// Read
+	api.HandleFunc("/todos", 			 makeHandler(TodoCreate)).Methods("POST")	// Create
 	api.HandleFunc("/todos/{id:[0-9]+}", makeHandler(TodoUpdate)).Methods("PUT")	// Update
 	api.HandleFunc("/todos/{id:[0-9]+}", makeHandler(TodoDelete)).Methods("DELETE")	// Delete
 
