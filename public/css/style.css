@@ -43,6 +43,7 @@ hr {
     color: white;
 }
 
-#title, #due {
-	border-radius: 0;
+/* Bypass pure-css */
+input.todo-title-edit, input.todo-due-edit {
+	border-radius: 0 !important;
 }
