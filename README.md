@@ -1,9 +1,19 @@
-# gotodo
+# GoToDo
 A sample todo app, built in Go.
 
 * Create and manage your tasks
 * Set a status and a due date
 * Access them with a REST API
+
+## Setup
+```
+git clone https://github.com/floosh/gotodo.git gotodo
+cd gotodo
+go get -d
+go build
+./gotodo
+```
+And here you are ! The todo app displays at localhost:8080
 
 ## Implementation details
 ### Back-End
